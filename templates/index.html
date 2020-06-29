@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta robots="noindex,nofollow">
-        <link href="style.css" rel="stylesheet">
+        <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
         <title>Amara link creator</title>
         <meta name="description" content="A tool for Language Advocates to generate Amara links from YouTube IDs.">
         <meta name="author" content="Daniel Hollas">
@@ -22,17 +22,29 @@
             <form>
                 <textarea id="input" name="input" rows="20" cols="10" placeholder="YouTubeIDs (one per line)" autocomplete="off" minlength="11" autofocus required spellcheck="false">
                 </textarea><br>
-                <button class="btn-send">Send</button>
+                <button id="btn-send">Send</button><span id="notification"> </span>
             </form>
 
             <table id="output">
                 <caption>Output</caption>
+                <thead>
                 <tr>
                     <th>YouTube IDs</th><th>Amara links</th>
                 </tr>
+                </thead>
+                <tbody>
+                </tbody>
             </table>
 
         </main>
+
+    <script>
+        document.getElementById("btn-send").addEventListener('click', e => {
+            let msg = "Request sent, please wait. This may take a while...";
+            document.getElementById("notification").innerHTML = msg;
+            e.preventDefault();
+        });
+    </script>
 
     </body>
 
