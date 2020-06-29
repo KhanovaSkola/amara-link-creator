@@ -2,12 +2,51 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta robots="noindex,nofollow">
-        <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+        <meta name="robots" content="noindex,nofollow">
         <title>Amara link creator</title>
         <meta name="description" content="A tool for Language Advocates to generate Amara links from YouTube IDs.">
         <meta name="author" content="Daniel Hollas">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: "sans-serif";
+            }
+            header {
+                background-color: #21242C;
+                color: white;
+                margin: 0px;
+                padding: 5px;
+                display: flex;
+            }
+            h1 {
+                font-size: 20px;
+                position: relative;
+            }
+            #input, #output {
+                font-family: "mono"
+                font-size: "11"
+            }
+            table {
+                margin: 5px;
+            }
+            .youtube-id {
+                color: #c7254e;
+                background-color: #f9f2f4;
+                font-family: "mono";
+                font-size: 10;
+            }
+            .amara-link {
+                font-family: "mono";
+                font-size: 10;
+            }
+            footer {
+                margin: 10px;
+                font-size: small;
+            }
+            footer::after {
+                content: "💜"
+            }
+        </style>
     </head>
     <body>
 
@@ -18,31 +57,94 @@
         </header>
 
         <main>
-            <p>Please, input YouTube IDs.</p>
+            <h2>Generate Khan Academy Amara links from YouTube IDs</h2>
             <form>
-                <textarea id="input" name="input" rows="20" cols="10" placeholder="YouTubeIDs (one per line)" autocomplete="off" minlength="11" autofocus required spellcheck="false">
+                <input type="text" id="lang" name="lang" maxlength="4" minlength="2" size="4" placeholder="lang" required spellcheck="false"><br>
+                <textarea id="input" name="input" rows="20" placeholder="YouTubeIDs (one per line)" autocomplete="off" required spellcheck="false">
                 </textarea><br>
                 <button id="btn-send">Send</button><span id="notification"> </span>
             </form>
 
-            <table id="output">
-                <caption>Output</caption>
+            <br>
+            <br>
+            <table>
                 <thead>
                 <tr>
                     <th>YouTube IDs</th><th>Amara links</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody id="output">
                 </tbody>
             </table>
 
         </main>
 
-    <script>
+        <hr>
+        <footer>Created by Daniel Hollas for
+            <a href="https://international-forum.khanacademy.org/" target="blank">
+                Khan Academy International Community
+            </a>
+        </footer>
+
+        <script>
+        let notification = document.getElementById("notification")
+
+        function validateInput(input) {
+            // TODO: Proper validation!
+            if (!input.match(/^[a-zA-Z0-9_-]{11}$/)) {
+                return false;
+            }
+            return true;
+        };
+
+        function insertRow(youtube_id) {
+            let row = document.createElement('TR');
+            let col = document.createElement('TD');
+            let col2 = document.createElement('TD');
+            col.innerHTML = youtube_id;
+            col.className = "youtube-id";
+            col2.className = "amara-link";
+            col2.id = youtube_id;
+            row.appendChild(col);
+            row.appendChild(col2);
+            document.getElementById('output').appendChild(row);
+        }
+
+        function processResponse() {
+            if (this.readyState == 4 && this.status == 200) {
+                let response = JSON.parse(this.responseText);
+                for (youtube_id in response) {
+                    document.getElementById(youtube_id).innerHTML =
+                        response[youtube_id];
+                }
+            } else if (this.readyState == 4) {
+                document.getElementById(youtube_id).innerHTML =
+                    this.responseText;
+            }
+        };
+
+        function sendRequest(youtube_id, lang) {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = processResponse;
+            xhttp.open("GET", `/${lang}/${youtube_id}`, true);
+            xhttp.send();
+        }
+
         document.getElementById("btn-send").addEventListener('click', e => {
-            let msg = "Request sent, please wait. This may take a while...";
-            document.getElementById("notification").innerHTML = msg;
             e.preventDefault();
+            notification.innerHTML = "";
+            document.getElementById('output').innerHTML = "";
+            let input = document.getElementById("input").value;
+            let lang = document.getElementById("lang").value;
+            input.replace('\r', '').split('\n').forEach(youtube_id => {
+                youtube_id = youtube_id.trim();
+                if (!validateInput(youtube_id)) {
+                    notification.innerHTML += "Invalid input:" + youtube_id;
+                    return;
+                }
+                insertRow(youtube_id);
+                sendRequest(youtube_id, lang);
+            });
         });
     </script>
 
