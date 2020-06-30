@@ -138,11 +138,11 @@
             let lang = document.getElementById("lang").value;
             input.replace('\r', '').split('\n').forEach(youtube_id => {
                 youtube_id = youtube_id.trim();
+                insertRow(youtube_id);
                 if (!validateInput(youtube_id)) {
-                    notification.innerHTML += "Invalid input:" + youtube_id;
+                    document.getElementById(youtube_id).innerHTML = "Invalid YouTube ID";
                     return;
                 }
-                insertRow(youtube_id);
                 sendRequest(youtube_id, lang);
             });
         });
