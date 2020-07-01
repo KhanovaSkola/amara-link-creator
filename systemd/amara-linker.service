@@ -1,0 +1,9 @@
+[Unit]
+Description=Amara Linker
+
+[Service]
+TimeoutStartSec=0
+ExecStart=/usr/bin/uwsgi /srv/amara.khanovaskola.cz/uwsgi.ini
+
+[Install]
+WantedBy=multi-user.target
