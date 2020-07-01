@@ -89,13 +89,22 @@
         <script>
         let notification = document.getElementById("notification")
 
-        function validateInput(input) {
-            // TODO: Proper validation!
-            if (!input.match(/^[a-zA-Z0-9_-]{11}$/)) {
+        function validateYoutubeId(youtube_id) {
+            if (typeof youtube_id !== 'string') return false;
+            if (!youtube_id.match(/^[a-zA-Z0-9_-]{11}$/)) {
                 return false;
             }
             return true;
         };
+
+        function validateLanguage(lang) {
+            // Amara uses bcp47. The regex was taken from
+            // https://github.com/SafetyCulture/bcp47/blob/develop/src/index.js
+            const pattern = /^(?:(en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang))$|^((?:[a-z]{2,3}(?:(?:-[a-z]{3}){1,3})?)|[a-z]{4}|[a-z]{5,8})(?:-([a-z]{4}))?(?:-([a-z]{2}|\d{3}))?((?:-(?:[\da-z]{5,8}|\d[\da-z]{3}))*)?((?:-[\da-wy-z](?:-[\da-z]{2,8})+)*)?(-x(?:-[\da-z]{1,8})+)?$|^(x(?:-[\da-z]{1,8})+)$/i; // eslint-disable-line max-len
+            // but let's be less strict for now
+            if (typeof lang !== 'string') return false;
+            return pattern.test(lang);
+        }
 
         function insertRow(youtube_id) {
             let row = document.createElement('TR');
@@ -118,15 +127,21 @@
                         response[youtube_id];
                 }
             } else if (this.readyState == 4) {
-                document.getElementById(youtube_id).innerHTML =
-                    this.responseText;
+                console.log(this);
+                notification.innerHTML += "Request Error"
+                //document.getElementById(youtube_id).innerHTML =
+                //    this.responseText;
             }
         };
 
         function sendRequest(youtube_id, lang) {
-            var xhttp = new XMLHttpRequest();
+            let xhttp = new XMLHttpRequest();
+            const url_template =
+              "{{url_for('get_amara_link', lang='LANG', youtube_id='YOUTUBEID') }}";
+            const url = url_template.replace('LANG', lang)
+                                    .replace('YOUTUBEID', youtube_id);
             xhttp.onreadystatechange = processResponse;
-            xhttp.open("GET", `/${lang}/${youtube_id}`, true);
+            xhttp.open("GET", url, true);
             xhttp.send();
         }
 
@@ -134,12 +149,23 @@
             e.preventDefault();
             notification.innerHTML = "";
             document.getElementById('output').innerHTML = "";
-            let input = document.getElementById("input").value;
             let lang = document.getElementById("lang").value;
-            input.replace('\r', '').split('\n').forEach(youtube_id => {
+            if (!validateLanguage(lang)) {
+                notification.innerHTML += "Invalid language";
+                return;
+            }
+            const input = document.getElementById("input").value;
+            // TODO: Get rid of this limitation (or make it larger) by batching requests
+            const MAX_REQUESTS = 50;
+            const youtube_ids = input.replace('\r', '').split('\n');
+            if (youtube_ids.length > MAX_REQUESTS) {
+              notification.innerHTML += `Too many YouTube IDs (maximum ${MAX_REQUESTS})`;
+              return;
+            }
+            youtube_ids.forEach(youtube_id => {
                 youtube_id = youtube_id.trim();
                 insertRow(youtube_id);
-                if (!validateInput(youtube_id)) {
+                if (!validateYoutubeId(youtube_id)) {
                     document.getElementById(youtube_id).innerHTML = "Invalid YouTube ID";
                     return;
                 }

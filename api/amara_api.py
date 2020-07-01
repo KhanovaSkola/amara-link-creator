@@ -52,7 +52,6 @@ class Amara:
                 # It is no longer required in amara_headers so we'll only print it here
                 # but do not return
                 amara_username = cols[1]
-                print('Using Amara username: ' + amara_username)
  
             amara_api_key = cols[0]
  
