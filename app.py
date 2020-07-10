@@ -19,10 +19,12 @@ def get_amara_link(lang, youtube_id):
     """Polls Amara API for AmaraID for a given YouTubeID
     and constructs a link to the Amara subtitling editor"""
     # TODO: manage multiple YouTubeIDs per request
+    # TODO: Add option to generate public Amara links
+    # (need to validate the video exists, and if not, create it, and add a language)
 
     ytid_regex = r'^[a-zA-Z0-9_-]{11}$'
     if not re.fullmatch(ytid_regex, youtube_id):
-        return {youtube_id: "invalid YouTube ID"}
+        return {youtube_id: ("invalid YouTube ID", "", "")}
 
     video_url = "https://youtube.com/watch?v=%s" % youtube_id
     amara = Amara()
@@ -30,8 +32,12 @@ def get_amara_link(lang, youtube_id):
     for r in amara_response['objects']:
         if r['team'] == AMARA_TEAM:
             amara_id = r['id']
-            url = "%s/%s/subtitles/editor/%s/%s/?team=%s" % \
+            editor_url = "%s/%s/subtitles/editor/%s/%s/?team=%s" % \
                 (amara.AMARA_BASE_URL, lang, amara_id, lang, AMARA_TEAM)
-            return {youtube_id: url}
+            assign_url = "%s/%s/videos/%s/collaborations/%s/join/subtitler/" % \
+                (amara.AMARA_BASE_URL, lang, amara_id, lang)
+            review_url = "%s/%s/videos/%s/collaborations/%s/join/reviewer/" % \
+                (amara.AMARA_BASE_URL, lang, amara_id, lang)
+            return {youtube_id: (assign_url, review_url, editor_url)}
 
-    return {youtube_id: "Could not find video on Amara"}
+    return {youtube_id: ("Could not find video on Amara", "", "")}
