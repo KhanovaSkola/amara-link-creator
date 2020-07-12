@@ -32,12 +32,18 @@ def get_amara_link(lang, youtube_id):
     for r in amara_response['objects']:
         if r['team'] == AMARA_TEAM:
             amara_id = r['id']
-            editor_url = "%s/%s/subtitles/editor/%s/%s/?team=%s" % \
+
+            # This is all too complicated, let's just generate one link to
+            # video page
+            #editor_url = "%s/%s/subtitles/editor/%s/%s/?team=%s" % \
+            #    (amara.AMARA_BASE_URL, lang, amara_id, lang, AMARA_TEAM)
+            #assign_url = "%s/%s/videos/%s/collaborations/%s/join/subtitler/" % \
+            #    (amara.AMARA_BASE_URL, lang, amara_id, lang)
+            #review_url = "%s/%s/videos/%s/collaborations/%s/join/reviewer/" % \
+            #    (amara.AMARA_BASE_URL, lang, amara_id, lang)
+
+            video_url = "%s/%s/videos/%s/%s/?team=%s" % \
                 (amara.AMARA_BASE_URL, lang, amara_id, lang, AMARA_TEAM)
-            assign_url = "%s/%s/videos/%s/collaborations/%s/join/subtitler/" % \
-                (amara.AMARA_BASE_URL, lang, amara_id, lang)
-            review_url = "%s/%s/videos/%s/collaborations/%s/join/reviewer/" % \
-                (amara.AMARA_BASE_URL, lang, amara_id, lang)
-            return {youtube_id: (assign_url, review_url, editor_url)}
+            return {youtube_id: (amara_id, video_url)}
 
     return {youtube_id: ("Could not find video on Amara", "", "")}

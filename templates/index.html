@@ -70,9 +70,8 @@
                 <thead>
                 <tr>
                     <th>YouTube IDs</th>
-                    <th>Amara assign links</th>
-                    <th>Amara review links</th>
-                    <th>Amara editor links</th>
+                    <th>Amara IDs</th>
+                    <th>Amara links</th>
                 </tr>
                 </thead>
                 <tbody id="output">
@@ -113,17 +112,14 @@
             let col1 = document.createElement('TD');
             let col2 = document.createElement('TD');
             let col3 = document.createElement('TD');
-            let col4 = document.createElement('TD');
             col1.innerHTML = youtube_id;
             col1.className = "youtube-id";
-            col2.className = "subtitle-link";
-            col3.className = "review-link";
-            col4.className = "editor-link";
+            col2.className = "amara-id";
+            col3.className = "video-link";
             row.id = youtube_id;
             row.appendChild(col1);
             row.appendChild(col2);
             row.appendChild(col3);
-            row.appendChild(col4);
             document.getElementById('output').appendChild(row);
         }
 
@@ -131,14 +127,21 @@
             if (this.readyState == 4 && this.status == 200) {
                 const response = JSON.parse(this.responseText);
                 for (youtube_id in response) {
+                    const amara_id = response[youtube_id][0];
+                    const amara_link = response[youtube_id][1];
                     const row = document.getElementById(youtube_id);
-                    row.childNodes[1].innerHTML = response[youtube_id][0];
-                    row.childNodes[2].innerHTML = response[youtube_id][1];
-                    row.childNodes[3].innerHTML = response[youtube_id][2];
+                    row.childNodes[1].innerHTML = amara_id;
+                    if (amara_link) {
+                        let link = document.createElement('A');
+                        link.href = amara_link;
+                        link.innerHTML = amara_link;
+                        link.target = "_blank";
+                        row.childNodes[2].appendChild(link);
+                    }
                 }
             } else if (this.readyState == 4) {
                 console.log(this);
-                notification.innerHTML += "Request Error"
+                notification.innerHTML += "Request Error " + this.status;
                 //document.getElementById(youtube_id).innerHTML =
                 //    this.responseText;
             }
