@@ -29,6 +29,9 @@
             table {
                 margin: 5px;
             }
+            .khan-logo {
+                transform: rotate(180deg);
+            }
             .youtube-id {
                 color: #c7254e;
                 background-color: #f9f2f4;
@@ -52,7 +55,7 @@
 
         <header>
             <!--Khan Academy logo (taken from Translation Editor-->
-            <svg class="_5yl6es" aria-hidden="true" width="24px" height="24px" viewBox="0 0 24 24"><path d="m2.4 4.97c-0.77 0.44-1.4 1.51-1.4 2.40v9.26c0 0.88 0.63 1.96 1.4 2.40l8.2 4.65c0.77 0.44 2.03 0.44 2.8 0l8.2-4.65c0.77-0.44 1.4-1.51 1.4-2.40v-9.26c0-0.88-0.63-1.96-1.4-2.40l-8.2-4.65c-0.77-0.44-2.03-0.44-2.8 0l-8.2 4.65z" clip-rule="evenodd" fill="#14BF96" fill-rule="evenodd"></path><path d="m20.45 10.16c-4.57 0.02-7.99 3.65-7.99 8.13v0.19h-0.92v-0.19c0-4.47-3.42-8.10-8.00-8.13-0.03 0.28-0.05 0.57-0.05 0.85 0 3.50 2.27 6.48 5.44 7.63 0.91 0.34 2.02 0.52 3.05 0.52 1.03 0 2.16-0.18 3.07-0.52 3.17-1.14 5.43-4.13 5.43-7.63 0-0.29-0.02-0.57-0.05-0.85z" clip-rule="evenodd" fill="#fff" fill-rule="evenodd"></path><path d="m12 10.66c1.52 0 2.75-1.23 2.75-2.75 0-1.52-1.23-2.75-2.75-2.75-1.52 0-2.75 1.23-2.75 2.75 0 1.52 1.23 2.75 2.75 2.75z" clip-rule="evenodd" fill="#fff" fill-rule="evenodd"></path></svg>
+            <svg class="khan-logo" aria-hidden="true" width="24px" height="24px" viewBox="0 0 24 24"><path d="m2.4 4.97c-0.77 0.44-1.4 1.51-1.4 2.40v9.26c0 0.88 0.63 1.96 1.4 2.40l8.2 4.65c0.77 0.44 2.03 0.44 2.8 0l8.2-4.65c0.77-0.44 1.4-1.51 1.4-2.40v-9.26c0-0.88-0.63-1.96-1.4-2.40l-8.2-4.65c-0.77-0.44-2.03-0.44-2.8 0l-8.2 4.65z" clip-rule="evenodd" fill="#14BF96" fill-rule="evenodd"></path><path d="m20.45 10.16c-4.57 0.02-7.99 3.65-7.99 8.13v0.19h-0.92v-0.19c0-4.47-3.42-8.10-8.00-8.13-0.03 0.28-0.05 0.57-0.05 0.85 0 3.50 2.27 6.48 5.44 7.63 0.91 0.34 2.02 0.52 3.05 0.52 1.03 0 2.16-0.18 3.07-0.52 3.17-1.14 5.43-4.13 5.43-7.63 0-0.29-0.02-0.57-0.05-0.85z" clip-rule="evenodd" fill="#fff" fill-rule="evenodd"></path><path d="m12 10.66c1.52 0 2.75-1.23 2.75-2.75 0-1.52-1.23-2.75-2.75-2.75-1.52 0-2.75 1.23-2.75 2.75 0 1.52 1.23 2.75 2.75 2.75z" clip-rule="evenodd" fill="#fff" fill-rule="evenodd"></path></svg>
             <h1> Amara link creator </h1>
         </header>
 
@@ -170,7 +173,7 @@
             }
             const input = document.getElementById("input").value;
             // TODO: Get rid of this limitation (or make it larger) by batching requests
-            const MAX_REQUESTS = 50;
+            const MAX_REQUESTS = 100;
             const youtube_ids = input.replace('\r', '').split('\n');
             if (youtube_ids.length > MAX_REQUESTS) {
               notification.innerHTML += `Too many YouTube IDs (maximum ${MAX_REQUESTS})`;

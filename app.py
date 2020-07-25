@@ -5,7 +5,7 @@ import re
 # export FLASK_ENV=development
 # python -m flask run
 from flask import Flask, render_template
-from api.amara_api import Amara
+from kstools.api.amara_api import Amara
 app = Flask(__name__)
 
 AMARA_TEAM = "khan-academy"
