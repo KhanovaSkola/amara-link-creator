@@ -64,7 +64,9 @@
             <form>
                 <input type="text" id="lang" name="lang" maxlength="4" minlength="2" size="4" placeholder="lang" required spellcheck="false"><br>
                 <textarea id="input" name="input" rows="20" placeholder="YouTubeIDs (one per line)" autocomplete="off" required spellcheck="false"></textarea><br>
-                <button id="btn-send">Send</button><span id="notification"> </span>
+                <button id="btn-send">Send</button><span id="notification"> </span><br>
+                <input type="checkbox" id="public" name="public" value="true">
+                <label for="public">Link to public Amara video (use only for videos outside of main KA channels!)</label><br>
             </form>
 
             <br>
@@ -150,12 +152,15 @@
             }
         };
 
-        function sendRequest(youtube_id, lang) {
-            let xhttp = new XMLHttpRequest();
+        function sendRequest(youtube_id, lang, public_amara) {
             const url_template =
               "{{url_for('get_amara_link', lang='LANG', youtube_id='YOUTUBEID') }}";
-            const url = url_template.replace('LANG', lang)
+            let xhttp = new XMLHttpRequest();
+            let url = url_template.replace('LANG', lang)
                                     .replace('YOUTUBEID', youtube_id);
+            if (public_amara) {
+                url += "?public=true";
+            }
             xhttp.onreadystatechange = processResponse;
             xhttp.open("GET", url, true);
             xhttp.send();
@@ -166,12 +171,15 @@
             notification.innerHTML = "";
             document.getElementById('output').innerHTML = "";
             const lang = document.getElementById("lang").value.trim();
-            // TODO: Add option to generate links to public amara
             if (!validateLanguage(lang)) {
                 notification.innerHTML += "Invalid language";
                 return;
             }
+
+            const public_amara = document.getElementById("public").checked;
+
             const input = document.getElementById("input").value;
+
             // TODO: Get rid of this limitation (or make it larger) by batching requests
             const MAX_REQUESTS = 100;
             const youtube_ids = input.replace('\r', '').split('\n');
@@ -186,7 +194,7 @@
                     document.getElementById(youtube_id).innerHTML = "Invalid YouTube ID";
                     return;
                 }
-                sendRequest(youtube_id, lang);
+                sendRequest(youtube_id, lang, public_amara);
             });
         });
     </script>
