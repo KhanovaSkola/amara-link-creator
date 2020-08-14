@@ -26,6 +26,9 @@ def get_amara_link(lang, youtube_id):
     else:
         team = AMARA_TEAM
 
+    # Amara URLs are case sensitive
+    lang = lang.lower()
+
     ytid_regex = r'^[a-zA-Z0-9_-]{11}$'
     if not re.fullmatch(ytid_regex, youtube_id):
         return {youtube_id: ("invalid YouTube ID", "", "")}
