@@ -9,6 +9,7 @@ from kstools.api.amara_api import Amara
 app = Flask(__name__)
 
 AMARA_TEAM = "khan-academy"
+AMARA_USERNAME = 'danekhollas'
 
 @app.route('/')
 def main():
@@ -29,13 +30,28 @@ def get_amara_link(lang, youtube_id):
     # Amara URLs are case sensitive
     lang = lang.lower()
 
+    create_requests = False
+    # List of languages for which we allow to create new subtitle requests
+    # on Team Amara
+    allowed_languages = ('ro', 'bg', 'hu')
+    if lang in allowed_languages:
+        create_requests = request.args.get('create-requests', 0, type=bool)
+
     ytid_regex = r'^[a-zA-Z0-9_-]{11}$'
     if not re.fullmatch(ytid_regex, youtube_id):
         return {youtube_id: ("invalid YouTube ID", "", "")}
 
     video_url = "https://youtube.com/watch?v=%s" % youtube_id
-    amara = Amara()
+    amara = Amara(AMARA_USERNAME)
     amara_response = amara.check_video(video_url, team)
+
+    # Create subtitle request if it does not exist
+    if create_requests and not public:
+        amara_id = amara_response['objects'][0]['id']
+        r = amara.list_subtitle_requests(amara_id, lang, AMARA_TEAM)
+        if r['meta']['total_count'] == 0:
+            r = amara.create_subtitle_request(amara_id, lang, AMARA_TEAM)
+            # TODO: Check the response (should be 201)
 
     # If video does not exist on Amara and we want public link
     # we need to create it first

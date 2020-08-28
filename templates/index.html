@@ -67,6 +67,8 @@
                 <button id="btn-send">Send</button><span id="notification"> </span><br>
                 <input type="checkbox" id="public" name="public" value="true">
                 <label for="public">Link to public Amara video (use only for videos outside of main KA channels!)</label><br>
+                <input type="checkbox" id="create-requests" name="create-requests" value="true">
+                <label for="create-requests">Create missing subtitle requests</label><br>
             </form>
 
             <br>
@@ -152,14 +154,17 @@
             }
         };
 
-        function sendRequest(youtube_id, lang, public_amara) {
+        function sendRequest(youtube_id, lang, publicAmara, createRequests) {
             const url_template =
               "{{url_for('get_amara_link', lang='LANG', youtube_id='YOUTUBEID') }}";
             let xhttp = new XMLHttpRequest();
             let url = url_template.replace('LANG', lang)
                                     .replace('YOUTUBEID', youtube_id);
-            if (public_amara) {
+            if (publicAmara) {
                 url += "?public=true";
+            }
+            if (createRequests && !publicAmara) {
+                url += "?create-requests=true"
             }
             xhttp.onreadystatechange = processResponse;
             xhttp.open("GET", url, true);
@@ -176,7 +181,8 @@
                 return;
             }
 
-            const public_amara = document.getElementById("public").checked;
+            const publicAmara = document.getElementById("public").checked;
+            const createRequests = document.getElementById("create-requests").checked;
 
             const input = document.getElementById("input").value;
 
@@ -194,7 +200,7 @@
                     document.getElementById(youtube_id).innerHTML = "Invalid YouTube ID";
                     return;
                 }
-                sendRequest(youtube_id, lang, public_amara);
+                sendRequest(youtube_id, lang, publicAmara, createRequests);
             });
         });
     </script>
