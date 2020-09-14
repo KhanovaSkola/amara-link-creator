@@ -62,7 +62,7 @@
         <main>
             <h2>Generate Khan Academy Amara links from YouTube IDs</h2>
             <form>
-                <input type="text" id="lang" name="lang" maxlength="4" minlength="2" size="4" placeholder="lang" required spellcheck="false"><br>
+                <input type="text" id="lang" name="lang" maxlength="10" minlength="2" size="10" placeholder="lang" required spellcheck="false"><br>
                 <textarea id="input" name="input" rows="20" placeholder="YouTubeIDs (one per line)" autocomplete="off" required spellcheck="false"></textarea><br>
                 <button id="btn-send">Send</button><span id="notification"> </span><br>
                 <input type="checkbox" id="public" name="public" value="true">
@@ -109,7 +109,6 @@
             // Amara uses bcp47. The regex was taken from
             // https://github.com/SafetyCulture/bcp47/blob/develop/src/index.js
             const pattern = /^(?:(en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)|(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|zh-min|zh-min-nan|zh-xiang))$|^((?:[a-z]{2,3}(?:(?:-[a-z]{3}){1,3})?)|[a-z]{4}|[a-z]{5,8})(?:-([a-z]{4}))?(?:-([a-z]{2}|\d{3}))?((?:-(?:[\da-z]{5,8}|\d[\da-z]{3}))*)?((?:-[\da-wy-z](?:-[\da-z]{2,8})+)*)?(-x(?:-[\da-z]{1,8})+)?$|^(x(?:-[\da-z]{1,8})+)$/i; // eslint-disable-line max-len
-            // but let's be less strict for now
             if (typeof lang !== 'string') return false;
             return pattern.test(lang);
         }
