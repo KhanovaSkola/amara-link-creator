@@ -186,7 +186,7 @@
             const input = document.getElementById("input").value;
 
             // TODO: Get rid of this limitation (or make it larger) by batching requests
-            const MAX_REQUESTS = 100;
+            const MAX_REQUESTS = 50;
             const youtube_ids = input.replace('\r', '').split('\n');
             if (youtube_ids.length > MAX_REQUESTS) {
               notification.innerHTML += `Too many YouTube IDs (maximum ${MAX_REQUESTS})`;
