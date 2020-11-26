@@ -33,7 +33,7 @@ def get_amara_link(lang, youtube_id):
     create_requests = False
     # List of languages for which we allow to create new subtitle requests
     # on Team Amara
-    allowed_languages = ('ro', 'bg', 'hu')
+    allowed_languages = ('az', 'ro', 'bg', 'hu', 'ky', 'kk', 'lv')
     if lang in allowed_languages:
         create_requests = request.args.get('create-requests', 0, type=bool)
 
