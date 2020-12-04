@@ -10,6 +10,7 @@ app = Flask(__name__)
 
 AMARA_TEAM = "khan-academy"
 AMARA_USERNAME = 'danekhollas'
+AMARA_UI_LANG = 'en'
 
 @app.route('/')
 def main():
@@ -62,20 +63,20 @@ def get_amara_link(lang, youtube_id):
 
         amara_id = amara_response['id']
         editor_url = "%s/%s/subtitles/editor/%s/%s/" % \
-            (amara.AMARA_BASE_URL, lang, amara_id, lang)
+            (amara.AMARA_BASE_URL, AMARA_UI_LANG, amara_id, lang)
         return {youtube_id: (amara_id, editor_url)}
 
     for r in amara_response['objects']:
         if not public and r['team'] == AMARA_TEAM:
             amara_id = r['id']
             video_url = "%s/%s/videos/%s/%s/?team=%s" % \
-                (amara.AMARA_BASE_URL, lang, amara_id, lang, team)
+                (amara.AMARA_BASE_URL, AMARA_UI_LANG, amara_id, lang, team)
             return {youtube_id: (amara_id, video_url)}
 
         elif public and r['team'] is None:
             amara_id = r['id']
             editor_url = "%s/%s/subtitles/editor/%s/%s/" % \
-                (amara.AMARA_BASE_URL, lang, amara_id, lang)
+                (amara.AMARA_BASE_URL, AMARA_UI_LANG, amara_id, lang)
             return {youtube_id: (amara_id, editor_url)}
 
     return {youtube_id: ("Could not find video on Amara", "")}
